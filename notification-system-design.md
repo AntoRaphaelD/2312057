@@ -139,3 +139,39 @@ DELETE /notifications/:id
 ```
 
 ---
+
+# Stage 2
+
+## Database Choice
+
+I will use **MySQL** because it is reliable, and suitable for structured data. It also provides good performance for searching, filtering, and sorting notifications.
+
+---
+
+## Database Schema
+
+### notifications
+
+id -> integer (Primary Key)
+std_id -> integer
+title -> varchar(255)
+message -> text
+type -> enum(Placement, Event, Result)
+isRead -> boolean
+createdAt -> timestamp
+
+---
+
+## Problems When Data Increases
+
+- Queries and performance become slower.
+- Database size increases.
+
+---
+
+## Solutions
+
+- Create indexes on studentId, isRead, and createdAt.
+- Use pagination to fetch notifications in smaller batches.
+
+---
