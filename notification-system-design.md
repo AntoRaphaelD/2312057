@@ -215,3 +215,56 @@ SELECT id, title, message, notificationType, createdAt FROM notifications WHERE 
 ```sql
 SELECT DISTINCT studentID FROM notifications WHERE notificationType = 'Placement' AND createdAt >= NOW() - INTERVAL 7 DAY;
 ```
+# Stage 4
+
+## Problem
+
+Every time a student opens the dashboard, the frontend requests all notifications from the server.
+
+This causes:
+- Increased database load.
+- Slower response time.
+
+---
+
+## Solution
+
+### 1. Pagination
+
+Load notifications in small batches (for Eg, loading only 10 or 20 at a time) instead of loading all notifications.
+
+Example:
+
+```
+GET /notifications?page=1&limit=10
+```
+
+---
+
+### 2. Caching
+
+Store frequently accessed notifications in a cache (such as Redis, or in cache memory) so repeated requests don't always hit the database and are fetched fastly from the cache memory.
+
+---
+
+### 3. Fetch Only New Notifications
+
+Instead of requesting all notifications every time, fetch only notifications created after the last received notification.
+
+Example:
+
+```
+GET /notifications?lastId=100
+```
+
+---
+
+### 4. Real-Time Updates
+
+Use WebSockets for real time notification updates
+
+---
+
+## Result
+
+These improvements reduce database load, improve response time, and provide a better user experience.
