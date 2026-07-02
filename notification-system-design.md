@@ -268,3 +268,54 @@ Use WebSockets for real time notification updates
 ## Result
 
 These improvements reduce database load, improve response time, and provide a better user experience.
+
+# Stage 5
+
+## Current Problem
+
+When the "Notify All" button is clicked, the system sends notifications to every student one by one.
+
+Problems Arised :
+- Slow for a large number of students.
+- If the server crashes, some students may not receive the notification which may leads to Inconsistencies.
+- High server load.
+
+---
+
+## Improved Design
+
+Now looking over the current problem we can redesign in a way that
+
+1. Store the notification in the database.
+2. Add the notification to a message queue.
+3. Worker processes read from the queue.
+4. Workers send notifications to students in the background. If sending fails, retry automatically.
+
+In this way we can redesign the implementation in an optimsed way to avoid server crashes and slow response time and maintain notification consistency.
+---
+
+## Pseudocode
+
+```text
+Create Notification
+
+Save notification to database
+
+Add notification to queue
+
+Worker reads notification from queue
+
+For each student
+    Send notification
+    If notification_failed
+        then Retry
+```
+
+---
+
+## Benefits Obtained
+
+- Faster response to the user.
+- Avoids Server Crash
+- Can handle a large number of students.
+- Failed notifications can be retried automatically instead of manual human intervention.
