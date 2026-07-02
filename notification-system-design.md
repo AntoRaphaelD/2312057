@@ -175,3 +175,43 @@ createdAt -> timestamp
 - Use pagination to fetch notifications in smaller batches.
 
 ---
+
+# Stage 3
+
+## Given Query
+
+```sql
+SELECT * FROM notifications WHERE studentID = 1042 AND isRead = false ORDER BY createdAt ASC;
+```
+
+This query is accurate as it fetches all the notificatoin which are unread for the student with the id = 1042
+
+## It is very slow
+
+- The table contains a huge number of notifications and query to get results will traverse through all the records.
+- for Example in my table if it have more than 5000 records then if i write a query to select a record or to check a condition it will iterate over those entire 5000 records
+- if this 5000 records grown to millions or even trillions, the speed will definitely comes too slow which affects the performance of the system
+
+## Improvements
+
+- Create a composite index on (studentID, isRead, createdAt)
+- so that when we try to access these fields it will return the records in minimal time
+- for Eg, a normal query without index will scan the table for O(n) time whereas using the index to fetch or scan the records will take O(log n) time to return as it have B+ tree indexing
+- then the optimised query will be as follows
+Example:
+
+```sql
+SELECT id, title, message, notificationType, createdAt FROM notifications WHERE studentID = 1042 AND isRead = false ORDER BY createdAt ASC;
+```
+
+## adding indexes on every column?
+
+- No We should not do that because adding index to all the columns will give it the property like executing the query without indexes
+- it slow down the update and insert operations
+- affects the performance of the system
+
+## Query to find students who received a Placement notification in the last 7 days
+
+```sql
+SELECT DISTINCT studentID FROM notifications WHERE notificationType = 'Placement' AND createdAt >= NOW() - INTERVAL 7 DAY;
+```
